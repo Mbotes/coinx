@@ -15,25 +15,25 @@
       <thead>
       <tr>
         <td>Rank</td>
+        <td>Logo</td>
         <td>Name</td>
         <td>Symbol</td>
         <td>Price ($)</td>
-        <td>1H</td>
-        <td>1D</td>
-        <td>1W</td>
+        <td>24H</td>
+        <td>Price Change % 24h</td>
         <td>Market Cap ($)</td>
       </tr>
       </thead>
       <tbody>
       <tr  v-for='coin in coins' v-bind:key="coin.id">
-        <td>{{coin.rank}}</td>
+        <td>{{coin.market_cap_rank}}</td>
+        <td><img :src=coin.image height="30" width="30" alt=""></td>
         <td>{{coin.name}}</td>
         <td>{{coin.symbol}}</td>
-        <td>{{coin.price_usd | roundNumbers | nFormatter}}</td>
-        <td :class="{ active: coin.percent_change_1h > 0, danger: coin.percent_change_1h < 0}">{{coin.percent_change_1h}}</td>
-        <td :class="{ active: coin.percent_change_24h > 0, danger: coin.percent_change_24h < 0}">{{coin.percent_change_24h}}</td>
-        <td :class="{ active: coin.percent_change_7d > 0, danger: coin.percent_change_7d < 0}">{{coin.percent_change_7d}}</td>
-        <td>{{coin.market_cap_usd | nFormatter}}</td>
+        <td>{{coin.current_price | roundNumbers | nFormatter}}</td>
+        <td>{{coin.price_change_24h | roundNumbers | nFormatter}}</td>
+        <td :class="{ active: coin.price_change_percentage_24h > 0, danger: coin.price_change_percentage_24h < 0}">{{coin.price_change_percentage_24h}}</td>
+        <td>{{coin.market_cap | nFormatter}}</td>
       </tr>
       </tbody>
     </table>
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     fetchCoins: function () {
-      axios.get('https://api.coinmarketcap.com/v1/ticker/')
+      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false')
         .then(response => {
           this.coins = response.data
         })
